@@ -6,6 +6,8 @@ Execution of a BLE beacon for use in BWSI PiPact independent project.
 Configuration of beacon done via external YAML. Underlying functionality
 provided by PyBluez module (https://github.com/pybluez/pybluez). Beacon
 uses iBeacon format (https://en.wikipedia.org/wiki/IBeacon).
+
+Trees blowing in the air
 """
 
 import argparse
