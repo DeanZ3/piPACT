@@ -3,19 +3,35 @@ import os
 
 #returns array of first 100 RSSI values
 #in file, real data starts on line 2, so 100th RSSI value is on line 101
-def getRSSIData(fileName):
+def getRSSIData(folderName, file):
+    fileName = os.path.join(folderName, file)
     with open(fileName) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file, delimiter = ',')
         lineCount = 0
-        data = []
+        data = [0] * 100
         for row in csv_reader:
             if lineCount == 0:
                 lineCount += 1
             elif lineCount <= 100:
-                data[lineCount - 1] = row[7]
+                data[lineCount - 1] = int(row[7])
                 lineCount += 1
             else:
                 return data
+
+#can't import pandas
+#def data(fileName):
+#    file = pandas.read_csv(fileName)
+#    for row in file:
+#        if lineCount == 0:
+#            lineCount += 1
+#        elif lineCount <= 100:
+#            data[lineCount - 1] = row[7]
+#            lineCount += 1
+#        else:
+#            return data
+
+def avgRSSI(allData):
+    return sum(allData) / int(len(allData))
 
 #returns distance in inches
 def getDistance(fileName):
@@ -49,3 +65,18 @@ def getAllFolderFiles(folderName):
     for fileName in fileNames:
         allFileNames.append(fileName)
     return allFileNames
+
+avgRSSIData = []
+scanFolderName = 'No_Obstructions'
+arrayAllFiles = getAllFolderFiles(scanFolderName)
+for file in arrayAllFiles:
+    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
+print(avgRSSIData)
+
+otherData = []
+scanName = "1_Short_on_A"
+dataAllFiles = getAllFolderFiles(scanName)
+print(avgRSSI(getRSSIData(scanName, dataAllFiles[1])))
+for file in dataAllFiles:
+    otherData.append(avgRSSI(getRSSIData(scanName, file)))
+print(otherData)
