@@ -13,7 +13,7 @@ advertiser:
 # Settings for beacon scanner
 scanner:
   control_file: 'scanner_control' # Control file which stops beacon scanner before timeout
-  scan_prefix: 'scan_35_77_55' # Prefix to attach to scan output files
+  scan_prefix: 'pi_pact_scan' # Prefix to attach to scan output files
   timeout: 180 # Scanning timeout (s)
   revisit: 1 # Interval at which to scan (s)
   filters: # Filters

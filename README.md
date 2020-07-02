@@ -14,9 +14,13 @@ Stated versions are tested and validated. Newer or older versions are not guaran
 # Installation
 1. Install the requirement.
 2. Clone the repository.
-3. Test the repository by attempting to import the piPACT reference code without error.
+3. Navigate into the `reference_code` folder that was created.
    ```console
-   pi@raspberrypi:~ $ python3
+   pi@raspberrypi:~ $ cd reference_code
+   ```
+4. Test the repository by attempting to import the piPACT reference code without error.
+   ```console
+   pi@raspberrypi:~/reference_code $ python3
    Python 3.7.3 (default, Dec 20 2019, 18:57:59) 
    [GCC 8.3.0] on linux
    Type "help", "copyright", "credits" or "license" for more information.
@@ -61,12 +65,12 @@ optional arguments:
 ## Configuration
 The configuration file is of the YAML format. It is provided with a default configuration which you should change to suit your needs. You will need to reference in-line comments and external module documentation to fully understand all configuration options. 
 
-The configuration YAML will only be used if specified as a commadn line argument. Many indiviudal configuration options can be overwritten by command line provided arguments.
+The configuration YAML will only be used if specified as a command line argument. Many indiviudal configuration options can be overwritten by command line provided arguments.
 
 ```yaml
 # Configuration file for piPACT reference collection software
 
-# Settings for iBeacon advertisment
+# Settings for beacon advertisment
 advertiser:
   control_file: 'advertiser_control' # Control file which stops beacon advertisement before timeout
   timeout: 20 # Advertisement timeout (s)
@@ -115,6 +119,34 @@ logger:
           - 'console'
           - 'file'
 ```
+### Filters
+Filters are a special configuration specific to a scanner and only available via the configuration YAML. They allow users to filter received data such that only data that meets all specified filters. Filters are specified as key-value pairs where the key is the data field to filter on and the value is filter specification (value/bounds). If no filters are specified then all received data is logged.
+
+There are two (2) categories of filters available:
+1. **ID filters**: Filter data based on **exact** match. These filters are associated with parts of a beacon advertisement that is fixed and unique to a beacon's identity. This filtering is done using [pandas.DataFrame.isin](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.isin.html) functionality. Available ID filters are
+   - ADDRESS - Advertiser's beacon hardware address
+   - UUID - Advertiser's [Universally Unique Identifier](https://en.wikipedia.org/wiki/Universally_unique_identifier) (UUID)
+   - MAJOR - Advertiser's [Major](https://developer.apple.com/ibeacon/Getting-Started-with-iBeacon.pdf) value
+   - MINOR - Advertiser's [Minor](https://developer.apple.com/ibeacon/Getting-Started-with-iBeacon.pdf) value
+   - TX POWER - Avertiser's stated Transmit (Tx) Power
+2. **Measurement filters**: Filter data based on **within-range** match. These filters are associated with measured values of the beacon advertisement that may vary and have no direct correlation with a beacon's identity. These are specified as 2-element list where the 1st element is the lower bound while the 2nd element is the upper bound. This filtering is done using [pandas.DataFrame.query](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html) functionality. Available measurement filters are
+   - TIMESTAMP - Time window specified by a beginning and end timestamp.
+   - RSSI - Range of Received Signal Strength Indicator (RSSI) values (dBm)
+
+Below is an example configuration of ADDRESS and RSSI filters. Note that the RSSI filter as an ID Filter value is a 2-element list.
+```yaml
+# Settings for beacon scanner
+scanner:
+  control_file: 'scanner_control' # Control file which stops beacon scanner before timeout
+  scan_prefix: 'pi_pact_scan' # Prefix to attach to scan output files
+  timeout: 20 # Scanning timeout (s)
+  revisit: 1 # Interval at which to scan (s)
+  filters: # Filters
+    ADDRESS: AA:BB:CC:DD:EE:FF
+    RSSI:
+      - -55
+      - 0
+```
 
 ## Advertiser
 An advertiser can be started in one of two primary modes concerning when and how to stop the advertiser. In either case, the user commanded stop is available.
@@ -124,7 +156,7 @@ In this mode, the advertiser will run infinitely until a user commanded stop is 
 
 1. Start the advertiser. The addition of the `&` flag causes the command to be executed in the background. This allows the user to retain control of the command line which makes commanding the advertiser to stop much easier.
    ```console
-   pi@raspberrypi:~ $ sudo python3 pi_pact.py -a --config pi_pact_config.yml &
+   pi@raspberrypi:~ $ sudo python3 pi_pact.py -a --config_yml pi_pact_config.yml &
    [1] 2083
    ``` 
 2. Observe the informational log messages.
@@ -144,7 +176,7 @@ In this mode, the advertiser will run either until the specified timeout or unti
 
 1. Start the advertiser. The addition of the `&` flag causes the command to be executed in the background. This allows the user to retain control of the command line which makes commanding the advertiser to stop much easier.
    ```console
-   pi@raspberrypi:~ $ sudo python3 pi_pact.py -a --config pi_pact_config.yml --timeout 20 &
+   pi@raspberrypi:~ $ sudo python3 pi_pact.py -a --config_yml pi_pact_config.yml --timeout 20 &
    [1] 2282
    ``` 
 2. Observe the informational log messages.
