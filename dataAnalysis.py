@@ -1,5 +1,6 @@
 import csv
 import os
+import pandas
 
 #returns array of first 100 RSSI values
 #in file, real data starts on line 2, so 100th RSSI value is on line 101
@@ -16,7 +17,8 @@ def getRSSIData(folderName, file):
                 data[lineCount - 1] = int(row[7])
                 lineCount += 1
             else:
-                return data
+                break
+        return data
 
 #can't import pandas
 #def data(fileName):
@@ -66,6 +68,8 @@ def getAllFolderFiles(folderName):
         allFileNames.append(fileName)
     return allFileNames
 
+
+#**********************************************************************************
 avgRSSIData = []
 scanFolderName = 'No_Obstructions'
 arrayAllFiles = getAllFolderFiles(scanFolderName)
@@ -74,9 +78,15 @@ for file in arrayAllFiles:
 print(avgRSSIData)
 
 otherData = []
-scanName = "1_Short_on_A"
-dataAllFiles = getAllFolderFiles(scanName)
-print(avgRSSI(getRSSIData(scanName, dataAllFiles[1])))
-for file in dataAllFiles:
-    otherData.append(avgRSSI(getRSSIData(scanName, file)))
+folderName = '1_Short_on_A'
+allFiles = getAllFolderFiles(folderName)
+for file in allFiles:
+    otherData.append(avgRSSI(getRSSIData(folderName, file)))
 print(otherData)
+
+hi = []
+lol = '1_Short_on_S'
+he = getAllFolderFiles(lol)
+for file in he:
+    hi.append(avgRSSI(getRSSIData(lol, file)))
+print(hi)
