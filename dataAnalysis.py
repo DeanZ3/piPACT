@@ -1,6 +1,11 @@
 import csv
 import os
-import pandas
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
 
 #returns array of first 100 RSSI values
 #in file, real data starts on line 2, so 100th RSSI value is on line 101
@@ -19,18 +24,6 @@ def getRSSIData(folderName, file):
             else:
                 break
         return data
-
-#can't import pandas
-#def data(fileName):
-#    file = pandas.read_csv(fileName)
-#    for row in file:
-#        if lineCount == 0:
-#            lineCount += 1
-#        elif lineCount <= 100:
-#            data[lineCount - 1] = row[7]
-#            lineCount += 1
-#        else:
-#            return data
 
 def avgRSSI(allData):
     return sum(allData) / int(len(allData))
@@ -53,6 +46,17 @@ def increaseDistance(distance):
     else:
         return distance + 3.5
 
+def sortDistance(fileNames):
+    distance = 0.0
+    allFileNames = []
+    while distance <= 144.0:
+        for fileName in fileNames:
+            if getDistance(fileName) == distance:
+                allFileNames.append(fileName)
+                distance = increaseDistance(distance)
+                print(distance)
+    return allFileNames
+
 #returns temperature in fahrenheit
 def getTemp(fileName):
     temp = 0
@@ -71,17 +75,9 @@ def getHumidity(fileName):
 
 #returns array of file names
 def getAllFolderFiles(folderName):
-    distance = 0.0
-    allFileNames = []
     folderPath = os.path.join(r'C:\Users\jzhan\Desktop\piPACT', folderName)
     fileNames = os.listdir(folderPath)
-    while distance <= 144.0:
-        for fileName in fileNames:
-            if getDistance(fileName) == distance:
-                allFileNames.append(fileName)
-                distance = increaseDistance(distance)
-                print(distance)
-    return allFileNames
+    return sortDistance(fileNames)
 
 
 #**********************************************************************************
@@ -91,4 +87,5 @@ arrayAllFiles = getAllFolderFiles(scanFolderName)
 #for file in arrayAllFiles:
 #    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
 #print(avgRSSIData)
-print(arrayAllFiles)
+print("lol")
+#print(arrayAllFiles)
