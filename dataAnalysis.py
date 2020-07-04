@@ -43,6 +43,16 @@ def getDistance(fileName):
     distance = newName[index : newName.find('_')]
     return distance
 
+def increaseDistance(distance):
+    if distance == 59.5:
+        return 62.0
+    elif distance == 62.0:
+        return 63.0
+    elif distance == 143.5:
+        return 144.0
+    else:
+        return distance + 3.5
+
 #returns temperature in fahrenheit
 def getTemp(fileName):
     temp = 0
@@ -61,11 +71,16 @@ def getHumidity(fileName):
 
 #returns array of file names
 def getAllFolderFiles(folderName):
+    distance = 0.0
     allFileNames = []
     folderPath = os.path.join(r'C:\Users\jzhan\Desktop\piPACT', folderName)
     fileNames = os.listdir(folderPath)
-    for fileName in fileNames:
-        allFileNames.append(fileName)
+    while distance <= 144.0:
+        for fileName in fileNames:
+            if getDistance(fileName) == distance:
+                allFileNames.append(fileName)
+                distance = increaseDistance(distance)
+                print(distance)
     return allFileNames
 
 
@@ -73,20 +88,7 @@ def getAllFolderFiles(folderName):
 avgRSSIData = []
 scanFolderName = 'No_Obstructions'
 arrayAllFiles = getAllFolderFiles(scanFolderName)
-for file in arrayAllFiles:
-    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
-print(avgRSSIData)
-
-otherData = []
-folderName = '1_Short_on_A'
-allFiles = getAllFolderFiles(folderName)
-for file in allFiles:
-    otherData.append(avgRSSI(getRSSIData(folderName, file)))
-print(otherData)
-
-hi = []
-lol = '1_Short_on_S'
-he = getAllFolderFiles(lol)
-for file in he:
-    hi.append(avgRSSI(getRSSIData(lol, file)))
-print(hi)
+#for file in arrayAllFiles:
+#    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
+#print(avgRSSIData)
+print(arrayAllFiles)
