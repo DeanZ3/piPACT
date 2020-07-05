@@ -51,10 +51,9 @@ def sortDistance(fileNames):
     allFileNames = []
     while distance <= 144.0:
         for fileName in fileNames:
-            if getDistance(fileName) == distance:
+            if getDistance(fileName) == str(distance):
                 allFileNames.append(fileName)
                 distance = increaseDistance(distance)
-                print(distance)
     return allFileNames
 
 #returns temperature in fahrenheit
@@ -80,14 +79,58 @@ def getAllFolderFiles(folderName):
     return sortDistance(fileNames)
 
 
-#**********************************************************************************
+"""
 avgRSSIData = []
 scanFolderName = 'No_Obstructions'
 arrayAllFiles = getAllFolderFiles(scanFolderName)
-#for file in arrayAllFiles:
-#    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
-#print(avgRSSIData)
-print("lol")
-#print(arrayAllFiles)
+for file in arrayAllFiles:
+    avgRSSIData.append(avgRSSI(getRSSIData(scanFolderName, file)))
+print(avgRSSIData)
+"""
 
-#************************************************************************************
+"""
+df = pd.read_csv(r'No_Obstructions\scan_0.0_77_53_20200626T150621.csv')
+df = df.replace('?', np.nan)
+df = df.dropna()
+
+df = df.drop(['MAJOR','MINOR','TX POWER'], axis=1)
+X = df.drop('RSSI', axis=1)
+y = df[['RSSI']]
+print(X)
+print("hi")
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+"""
+
+"""
+df = pd.read_csv('mpg.csv')
+df = df.replace('?', np.nan)
+df = df.dropna()
+
+df = df.drop(['name','origin','model_year'], axis=1)
+X = df.drop('mpg', axis=1)
+y = df[['mpg']]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+reg = LinearRegression()
+reg.fit(X_train[['horsepower']], y_train)
+
+y_predicted = reg.predict(X_test[['horsepower']])
+print("Mean squared error: %.2f" % mean_squared_error(y_test, y_predicted))
+print('R²: %.2f' % r2_score(y_test, y_predicted))
+
+reg = LinearRegression()
+reg.fit(X_train[['horsepower','weight','cylinders']], y_train)
+y_predicted = reg.predict(X_test[['horsepower','weight','cylinders']])
+print("Mean squared error: %.2f" % mean_squared_error(y_test, y_predicted))
+print('R²: %.2f' % r2_score(y_test, y_predicted))
+
+fig, ax = plt.subplots()
+ax.scatter(y_test, y_predicted)
+ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+ax.set_xlabel('measured')
+ax.set_ylabel('predicted')
+plt.show()
+"""
