@@ -21,6 +21,7 @@ def getAllFileUUIDData(folderName, file):
             lineCount += 1
         return data
 
+#Gets all the Major values
 def getAllFileMajorData(folderName, file):
     fileName = os.path.join(folderName, file)
     with open(fileName) as csv_file:
@@ -33,6 +34,7 @@ def getAllFileMajorData(folderName, file):
             lineCount += 1
         return data
 
+#Gets all the Minor values
 def getAllFileMinorData(folderName, file):
     fileName = os.path.join(folderName, file)
     with open(fileName) as csv_file:
@@ -45,6 +47,7 @@ def getAllFileMinorData(folderName, file):
             lineCount += 1
         return data
 
+#Gets all of the RSSI values in a file
 def getAllFileRSSIData(folderName, file):
     fileName = os.path.join(folderName, file)
     with open(fileName) as csv_file:
@@ -87,7 +90,7 @@ def getAllRSSI(folderName):
         avg.remove(avg[0])
     return avg
 
-#returns distance in inches
+#returns distance of a file in inches
 def getDistance(fileName):
     distance = 0.0
     index = fileName.find('_')
@@ -95,6 +98,7 @@ def getDistance(fileName):
     distance = newName[index : newName.find('_')]
     return np.float32(distance)
 
+#Gets all distances in a folder
 def getAllDistances(folderName):
     distances = []
     for file in getAllFolderFiles(folderName):
@@ -104,6 +108,7 @@ def getAllDistances(folderName):
         distances.remove(0.0)
     return distances
 
+#Creates an array of all distances in folder, sorted
 def sortDistance(fileNames):
     copy = fileNames
     orderedFiles = []
@@ -153,6 +158,7 @@ def getAllHumidity(folderName):
     humidity.remove(humidity[0])
     return humidity
 
+#Gets date from file
 def getDate(fileName):
     date = 0
     index = fileName.index("T")
@@ -167,6 +173,7 @@ def getAllDate(folderName):
     dates.remove(dates[0])
     return dates
 
+#Gets time from file
 #fileName ends in .csv
 def getTime(fileName):
     time = 0
@@ -182,36 +189,23 @@ def getAllTime(folderName):
     times.remove(times[0])
     return times
 
-def tooLong(fileName1, fileName2):
-    file1 = getTime(fileName1)
-    file2 = getTime(fileName2)
-    if int(file1/10000) == int(file2/10000):
-        if abs(file1 - file2) <= 1000:
-            return True
-        else:
-            return False
-    elif abs(int(file1/10000) - int(file2/10000)) == 1:
-        if abs(file1 - file2) <= 5000:
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
 #Math functions
+
+#Absolute value all values in a list
 def Abs(list):
     newList = []
     for num in list:
         newList.append(abs(num))
     return newList
 
+#e to the power of all values in a list
 def ePower(list):
     newList = []
     for num in list:
         newList.append(pow(e, num))
     return newList
 
+#Do log base 10 on all values of a list
 def log10(list):
     newList = []
     for num in list:
@@ -237,14 +231,14 @@ def falsePositive(actual, prediction):
         return True
     return False
 
-#Say no sick when not sick
+#Say not sick when not sick
 def trueNegative(actual, prediction):
     if actual >= 72.0 and prediction > 72.0:
         print(prediction, "is a True Negative when distance really is ...", actual)
         return True
     return False
 
-#Say no sick when really they are sick
+#Say not sick when really they are sick
 def falseNegative(actual, prediction):
     if actual < 72.0 and prediction > 72.0:
         print("***", end = " ")
@@ -271,6 +265,25 @@ def checkALL(actual, prediction):
     print(trueN, "True Negatives")
     print(falseN, "False Negatives")
 
+#Check how long two devices have been together
+def tooLong(fileName1, fileName2):
+    file1 = getTime(fileName1)
+    file2 = getTime(fileName2)
+    if int(file1/10000) == int(file2/10000):
+        if abs(file1 - file2) <= 1000:
+            return True
+        else:
+            return False
+    elif abs(int(file1/10000) - int(file2/10000)) == 1:
+        if abs(file1 - file2) <= 5000:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+#Create a new csv file for all data for report
 def writeCSV():
     headers = ['Distance', 'No_Obstructions', 'Short_A', 'Short_S']
     headers += ['2_Shorts', 'Jean_A', 'Jean_S', '2_Jeans', 'Shelf_M', 'Human_A']
@@ -281,7 +294,6 @@ def writeCSV():
 
         for index in range(44):
             writer.writerow(csvRow(index))
-
 
 def csvRow(index):
     content = {}
@@ -300,14 +312,7 @@ def csvRow(index):
     return content
 
 
-"""
-    fieldNames = ['distance', 'hi']
-    theWriter = csv.DictWrtier(f, fieldNames = filedNames)
-
-    theWriter.writeheader()
-    for i in range(1, 3):
-        theWriter.writerow({'distance' : 'one', 'hi' : 'two'})
-"""
+#Test Code
 """
 print("No Obstructions:", getAllRSSI("No_Obstructions"))
 print("\n")

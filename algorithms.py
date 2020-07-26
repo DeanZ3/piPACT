@@ -11,36 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy.optimize import curve_fit
 
-#exponential
-"""
-def func(x, a, b, c):
-    value = a * np.exp(-b * x) + c
-    return value
-
-xdata = np.linspace(0, 4, 50)
-y = func(xdata, 2.5, 1.3, 0.5)
-np.random.seed(1729)
-y_noise = 0.2 * np.random.normal(size=xdata.size)
-ydata = y + y_noise
-plt.plot(xdata, ydata, 'b-', label='data')
-
-popt, pcov = curve_fit(func, xdata, ydata)
-popt = [ 2.55423706,  1.35190947,  0.47450618]
-plt.plot(xdata, func(xdata, *popt), 'r-',
-         label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
-
-
-popt, pcov = curve_fit(func, xdata, ydata, bounds=(0, [3., 1., 0.5]))
-popt = [ 2.43708906,  1.        ,  0.35015434]
-plt.plot(xdata, func(xdata, *popt), 'g--',
-         label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
-
-plt.xlabel('x')
-plt.ylabel('y')
-plt.legend()
-plt.show()
-"""
-#Basic linear
+#Basic linear regression line
 """
 x = np.log(getAllDistances())
 y = getAllRSSI("Short_A")
@@ -52,12 +23,8 @@ plt.plot(x, m*x + b)
 plt.show()
 """
 
-#My multilinear
-#O = No_Obstructions
-#2S = 2_Shorts
-#2J = 2_Jeans
-#S = Shelf_M
-#H = Human_A
+#Original method to create DataFrame with pandas
+#Different length lists for each variation, so put aside
 """
 Bluetooth = {'ORSSI': getAllRSSI("No_Obstructions"),
                 '2SRSSI': getAllRSSI("2_Shorts"),
@@ -88,6 +55,14 @@ headers = ['ORSSI', '2SRSSI', '2JRSSI', #'SRSSI', 'HRSSI',
 #df = pd.DataFrame(Bluetooth,columns=['RSSI','Distance','Temperature','Humidity'])
 df = pd.DataFrame(Bluetooth, columns = headers)
 """
+
+#Create DataFrame that holds all data via pandas for algorithms
+
+#O = No_Obstructions
+#2S = 2_Shorts
+#2J = 2_Jeans
+#S = Shelf_M
+#H = Human_A
 l1 = getAllRSSI("No_Obstructions")
 l2 = getAllRSSI("2_Shorts")
 l3 = getAllRSSI("2_Jeans")
@@ -158,6 +133,12 @@ df.fillna(df.mean(), inplace=True)
 
 print(df)
 
+
+
+#Create models of X and Y variations
+#One X is for RSSI, temperature and humidity, and the other is just RSSI
+
+
 #XO = df[['ODistance', 'OTemperature', 'OHumidity']]
 XO = df[['ODistance']]
 YO = df['ORSSI']
@@ -190,6 +171,7 @@ YH = df['HRSSI']
 H = linear_model.LinearRegression()
 H.fit(XH, YH)
 
+#Quick regression line constants prinout
 print('Intercept: \n', O.intercept_)
 print('Coefficients: \n', O.coef_)
 print('Intercept: \n', S2.intercept_)
@@ -201,7 +183,7 @@ print('Coefficients: \n', S.coef_)
 print('Intercept: \n', H.intercept_)
 print('Coefficients: \n', H.coef_)
 
-# Print header stuff
+# Print header stuff to get inputted data
 root= tk.Tk()
 
 canvas1 = tk.Canvas(root, width = 500, height = 300)
@@ -220,26 +202,22 @@ canvas1.create_window(260, 240, window=label_Coefficients)
 # New RSSI label and input box
 label1 = tk.Label(root, text='Type RSSI: ')
 canvas1.create_window(100, 100, window=label1)
-
 entry1 = tk.Entry (root) # create 1st entry box
 canvas1.create_window(270, 100, window=entry1)
 
-"""
 # New Temperature label and input box
 label2 = tk.Label(root, text=' Type Temperature: ')
 canvas1.create_window(120, 120, window=label2)
-
 entry2 = tk.Entry (root) # create 2nd entry box
 canvas1.create_window(270, 120, window=entry2)
 
 # New Humidity Label and input box
 label3 = tk.Label(root, text='Type Humidity: ')
 canvas1.create_window(114, 140, window=label3)
-
 entry3 = tk.Entry (root) # create 3rd entry box
 canvas1.create_window(270, 140, window=entry3)
-"""
-"""
+
+
 # Calculate prediction w/ Tempertaure & Humidity
 def values():
     global RSSI #our 1st input variable
@@ -420,9 +398,38 @@ ax5.set_xlabel('Humidity')
 ax5.set_title('Humidity Vs. RSSI')
 """
 
-#root.mainloop()
+root.mainloop()
 
 
+#exponential
+"""
+def func(x, a, b, c):
+    value = a * np.exp(-b * x) + c
+    return value
+
+xdata = np.linspace(0, 4, 50)
+y = func(xdata, 2.5, 1.3, 0.5)
+np.random.seed(1729)
+y_noise = 0.2 * np.random.normal(size=xdata.size)
+ydata = y + y_noise
+plt.plot(xdata, ydata, 'b-', label='data')
+
+popt, pcov = curve_fit(func, xdata, ydata)
+popt = [ 2.55423706,  1.35190947,  0.47450618]
+plt.plot(xdata, func(xdata, *popt), 'r-',
+         label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
+
+
+popt, pcov = curve_fit(func, xdata, ydata, bounds=(0, [3., 1., 0.5]))
+popt = [ 2.43708906,  1.        ,  0.35015434]
+plt.plot(xdata, func(xdata, *popt), 'g--',
+         label='fit: a=%5.3f, b=%5.3f, c=%5.3f' % tuple(popt))
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+plt.show()
+"""
 #Machine Learning
 """
 df = pd.read_csv(r'data.csv')
