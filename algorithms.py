@@ -53,28 +53,153 @@ plt.show()
 """
 
 #My multilinear
+#O = No_Obstructions
+#2S = 2_Shorts
+#2J = 2_Jeans
+#S = Shelf_M
+#H = Human_A
+"""
+Bluetooth = {'ORSSI': getAllRSSI("No_Obstructions"),
+                '2SRSSI': getAllRSSI("2_Shorts"),
+                '2JRSSI': getAllRSSI("2_Jeans"),
+                'SRSSI': getAllRSSI("Shelf_M"),
+                'HRSSI': getAllRSSI("Human_A"),
 
-Bluetooth = {'RSSI': getAllRSSI("Short_A"),
-                'Distance': np.log(getAllDistances("short_A")),
-                'realDistance': getAllDistances("short_A"),
-                'Temperature': np.log(getAllTemp("Short_A")),
-                'Humidity': np.log(getAllHumidity("Short_A")),
+                'ODistance': np.log(getAllDistances("No_Obstructions")),
+                '2SDistance': np.log(getAllDistances("2_Shorts")),
+                '2JDistance': np.log(getAllDistances("2_Jeans")),
+                'SDistance': np.log(getAllDistances("Shelf_M")),
+                'HDistance': np.log(getAllDistances("Human_A")),
+
+                'ORealDistance': getAllDistances("No_Obstructions"),
+                '2SRealDistance': getAllDistances("2_Shorts"),
+                '2JRealDistance': getAllDistances("2_Jeans"),
+                'SRealDistance': getAllDistances("Shelf_M"),
+                'HRealDistance': getAllDistances("Human_A")
+
+                #'Temperature': np.log(getAllTemp("Short_A")),
+                #'Humidity': np.log(getAllHumidity("Short_A")),
                 }
 
+headers = ['ORSSI', '2SRSSI', '2JRSSI', #'SRSSI', 'HRSSI',
+    'ODistance', '2SDistance', '2JDistance', #'SDistance', 'HDistance',
+    'ORealDistance', '2SRealDistance', '2JRealDistance'] #'SRealDistance', 'HRealDistance']
+
 #df = pd.DataFrame(Bluetooth,columns=['RSSI','Distance','Temperature','Humidity'])
-df = pd.DataFrame(Bluetooth,columns=['RSSI', 'Distance', 'realDistance'])
-print (df)
+df = pd.DataFrame(Bluetooth, columns = headers)
+"""
+l1 = getAllRSSI("No_Obstructions")
+l2 = getAllRSSI("2_Shorts")
+l3 = getAllRSSI("2_Jeans")
+l4 = getAllRSSI("Shelf_M")
+l5 = getAllRSSI("Human_A")
 
-#X = df[['Distance','Temperature', 'Humidity']]
-X = df[['Distance']]
-Y = df['RSSI']
+l6 = np.log(getAllDistances("No_Obstructions"))
+l7 = np.log(getAllDistances("2_Shorts"))
+l8 = np.log(getAllDistances("2_Jeans"))
+l9 = np.log(getAllDistances("Shelf_M"))
+l10 = np.log(getAllDistances("Human_A"))
 
+l11 = getAllDistances("No_Obstructions")
+l12 = getAllDistances("2_Shorts")
+l13 = getAllDistances("2_Jeans")
+l14 = getAllDistances("Shelf_M")
+l15 = getAllDistances("Human_A")
+
+l16 = np.log(getAllTemp("No_Obstructions"))
+l17 = np.log(getAllTemp("2_Shorts"))
+l18 = np.log(getAllTemp("2_Jeans"))
+l19 = np.log(getAllTemp("Shelf_M"))
+l20 = np.log(getAllTemp("Human_A"))
+
+l21 = np.log(getAllHumidity("No_Obstructions"))
+l22 = np.log(getAllHumidity("2_Shorts"))
+l23 = np.log(getAllHumidity("2_Jeans"))
+l24 = np.log(getAllHumidity("Shelf_M"))
+l25 = np.log(getAllHumidity("Human_A"))
+
+
+s1 = pd.Series(l1, name = 'ORSSI')
+s2 = pd.Series(l2, name = '2SRSSI')
+s3 = pd.Series(l3, name = '2JRSSI')
+s4 = pd.Series(l4, name = 'SRSSI')
+s5 = pd.Series(l5, name = 'HRSSI')
+
+s6 = pd.Series(l6, name = 'ODistance')
+s7 = pd.Series(l7, name = '2SDistance')
+s8 = pd.Series(l8, name = '2JDistance')
+s9 = pd.Series(l9, name = 'SDistance')
+s10 = pd.Series(l10, name = 'HDistance')
+
+s11 = pd.Series(l11, name = 'ORealDistance')
+s12 = pd.Series(l12, name = '2SRealDistance')
+s13 = pd.Series(l13, name = '2JRealDistance')
+s14 = pd.Series(l14, name = 'SRealDistance')
+s15 = pd.Series(l15, name = 'HRealDistance')
+
+s16 = pd.Series(l16, name = 'OTemperature')
+s17 = pd.Series(l17, name = '2STemperature')
+s18 = pd.Series(l18, name = '2JTemperature')
+s19 = pd.Series(l19, name = 'STemperature')
+s20 = pd.Series(l20, name = 'HTemperature')
+
+s21 = pd.Series(l21, name = 'OHumidity')
+s22 = pd.Series(l21, name = '2SHumidity')
+s23 = pd.Series(l21, name = '2JHumidity')
+s24 = pd.Series(l21, name = 'SHumidity')
+s25 = pd.Series(l21, name = 'HHumidity')
+
+df = pd.concat([s1, s2, s3, s4, s5,
+                s6, s7, s8, s9, s10,
+                s11, s12, s13, s14, s15,
+                s16, s17, s18, s19, s20,
+                s21, s22, s23, s24, s25], axis = 1)
+df.fillna(df.mean(), inplace=True)
+
+print(df)
+
+#XO = df[['ODistance', 'OTemperature', 'OHumidity']]
+XO = df[['ODistance']]
+YO = df['ORSSI']
 # with sklearn
-regr = linear_model.LinearRegression()
-regr.fit(X, Y)
+O = linear_model.LinearRegression()
+O.fit(XO, YO)
 
-print('Intercept: \n', regr.intercept_)
-print('Coefficients: \n', regr.coef_)
+#X2S = df[['2SDistance', '2STemperature', '2SHumidity']]
+X2S = df[['2SDistance']]
+Y2S = df['2SRSSI']
+S2 = linear_model.LinearRegression()
+S2.fit(X2S, Y2S)
+
+#X2J = df[['2JDistance', '2JTemperature', '2JHumidity']]
+X2J = df[['2JDistance']]
+Y2J = df['2JRSSI']
+J2 = linear_model.LinearRegression()
+J2.fit(X2J, Y2J)
+
+
+#XS = df[['SDistance', 'STemperature', 'SHumidity']]
+XS = df[['SDistance']]
+YS = df['SRSSI']
+S = linear_model.LinearRegression()
+S.fit(XS, YS)
+
+#XH = df[['HDistance', 'HTemperature', 'HHumidity']]
+XH = df[['HDistance']]
+YH = df['HRSSI']
+H = linear_model.LinearRegression()
+H.fit(XH, YH)
+
+print('Intercept: \n', O.intercept_)
+print('Coefficients: \n', O.coef_)
+print('Intercept: \n', S2.intercept_)
+print('Coefficients: \n', S2.coef_)
+print('Intercept: \n', J2.intercept_)
+print('Coefficients: \n', J2.coef_)
+print('Intercept: \n', S.intercept_)
+print('Coefficients: \n', S.coef_)
+print('Intercept: \n', H.intercept_)
+print('Coefficients: \n', H.coef_)
 
 # Print header stuff
 root= tk.Tk()
@@ -83,12 +208,12 @@ canvas1 = tk.Canvas(root, width = 500, height = 300)
 canvas1.pack()
 
 # with sklearn
-Intercept_result = ('Intercept: ', regr.intercept_)
+Intercept_result = ('Intercept: ', O.intercept_)
 label_Intercept = tk.Label(root, text=Intercept_result, justify = 'center')
 canvas1.create_window(260, 220, window=label_Intercept)
 
 # with sklearn
-Coefficients_result  = ('Coefficients: ', regr.coef_)
+Coefficients_result  = ('Coefficients: ', O.coef_)
 label_Coefficients = tk.Label(root, text=Coefficients_result, justify = 'center')
 canvas1.create_window(260, 240, window=label_Coefficients)
 
@@ -138,11 +263,12 @@ def values():
     label_Prediction = tk.Label(root, text= Prediction_result, bg='orange')
     canvas1.create_window(260, 280, window=label_Prediction)
 """
+"""
 def values():
     global RSSI #our 1st input variable
     RSSI = np.float32(entry1.get())
 
-    prediction = RSSI - np.float32(regr.intercept_)
+    prediction = RSSI - np.float32(O.intercept_)
     prediction /= regr.coef_[0]
     prediction = pow(e, prediction)
 
@@ -154,6 +280,7 @@ def values():
     label_Prediction = tk.Label(root, text= Prediction_result, bg='orange')
     canvas1.create_window(260, 280, window=label_Prediction)
 """
+
 def test(folderName):
     trueP = 0
     falseP = 0
@@ -164,10 +291,10 @@ def test(folderName):
         RSSI = avgRSSI(getRSSIData(folderName, file))
         Temperature = np.log(getTemp(file))
         Humidity = np.log(getHumidity(file))
-        prediction = RSSI - np.float32(regr.intercept_)
-        #prediction -= (regr.coef_[1] * Temperature)
-        #prediction -= (regr.coef_[2] * Humidity)
-        prediction /= regr.coef_[0]
+        prediction = RSSI - np.float32(H.intercept_)
+        #prediction -= (H.coef_[1] * Temperature)
+        #prediction -= (H.coef_[2] * Humidity)
+        prediction /= H.coef_[0]
         prediction = pow(e, prediction)
         if truePositive(actual, prediction):
             trueP += 1
@@ -183,66 +310,94 @@ def test(folderName):
     print(falseP, "False Positives")
     print(trueN, "True Negatives")
     print(falseN, "False Negatives")
-test("Short_A")
-"""
-"""
-def test0(folderName):
-    for file in getAllFolderFiles(folderName)
-        Temperature = np.log(getTemp(file))
-        Humidity = np.log(getHumidity(file))
-        value = np.float32(regr.intercept_)
-        value += regr.coef_[1] * Temperature
-        value += regr.coef_[0] * Humidity
-        value
 
-test0()
-"""
+print("No Obstructions", test("No_Obstructions"))
+print("2 Shorts", test("2_Shorts"))
+print("2 Jeans", test("2_Jeans"))
+print("Shelf", test("Shelf_M"))
+print("Human", test("Human_A"))
 
-button1 = tk.Button (root, text='Predict Distance',command=values, bg='orange') # button to call the 'values' command above
+"""
+button1 = tk.Button(root, text='Predict Distance',command=values, bg='orange') # button to call the 'values' command above
 canvas1.create_window(270, 170, window=button1)
-
+"""
+"""
 # Plot Graphs
 
-#plot 1st scatter
+#plot Linear/Logged Data
 figure3 = plt.Figure(figsize=(5,4), dpi=100)
 ax3 = figure3.add_subplot(111)
-ax3.scatter(df['Distance'].astype(float),df['RSSI'].astype(float), color = 'r')
+#ax3.scatter(df['ODistance'].astype(float),df['ORSSI'].astype(float), color = 'r')
 
-x = np.log(getAllDistances("Short_A"))
-y = getAllRSSI("Short_A")
-#ax3.plot(x, y, 'o')
-m, b = np.polyfit(x, y, 1)
-ax3.plot(x, m*x + b)
-ax3.plot(x, -11*x + -30)
-#plt.show()
+xO = df['ODistance']
+yO = df['ORSSI']
+#ax3.plot(xO, yO, 'o')
+mO, bO = np.polyfit(xO, yO, 1)
+ax3.plot(xO, mO*xO + bO, color = 'b', label = 'No Obstructions')
+
+x2S = df['2SDistance']
+y2S = df['2SRSSI']
+m2S, b2S = np.polyfit(x2S, y2S, 1)
+ax3.plot(x2S, m2S*x2S + b2S, color = 'r', label = '2 Shorts')
+
+x2J = df['2JDistance']
+y2J = df['2JRSSI']
+m2J, b2J = np.polyfit(x2J, y2J, 1)
+ax3.plot(x2J, m2J*x2J + b2J, color = 'y', label = '2 Jeans')
+
+xS = df['SDistance']
+yS = df['SRSSI']
+mS, bS = np.polyfit(xS, yS, 1)
+ax3.plot(xS, mS*xS + bS, color = 'm', label = 'Shelf')
+
+xH = df['HDistance']
+yH = df['HRSSI']
+mH, bH = np.polyfit(xH, yH, 1)
+ax3.plot(xH, mH*xH + bH, color = 'c', label = 'Human')
 
 scatter3 = FigureCanvasTkAgg(figure3, root)
 scatter3.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
-ax3.legend(['RSSI'])
-ax3.set_xlabel('Distance')
-ax3.set_title('Distance Vs. RSSI')
+ax3.legend()
+ax3.set_xlabel('Distance (inches)')
+ax3.set_ylabel('RSSI (decibel milliwatts)')
+ax3.set_title('RSSI vs. Logged Distance for Obstructions')
 
 
 
 
-#plot 2nd scatter
+#plot Normal/Curved Data
 figure4 = plt.Figure(figsize=(5,4), dpi=100)
 ax4 = figure4.add_subplot(111)
-ax4.scatter(getAllDistances("Short_A").astype(float),getAll.astype(float), color = 'g')
+#ax4.scatter(df['realDistance'].astype(float),df['RSSI'].astype(float), color = 'g')
 
-x = getAllDistances("Short_A")
-y = getAllRSSI("Short_A")
-#ax3.plot(x, y, 'o')
+xO = df['ORealDistance']
+yO = df['ORSSI']
+#ax3.plot(xO, yO, 'o')
+ax4.plot(xO, O.coef_*np.log(xO) + O.intercept_, color = 'b', label = 'No Obstructions')
 
-ax4.plot(x, regr.coef_[0]*np.log(x) + regr.intercept_)
-#plt.show()
+x2S = df['2SRealDistance']
+y2S = df['2SRSSI']
+ax4.plot(x2S, S2.coef_*np.log(x2S) + S2.intercept_, color = 'r', label = '2 Shorts')
+
+x2J = df['2JRealDistance']
+y2J = df['2JRSSI']
+ax4.plot(x2J, J2.coef_*np.log(x2J) + J2.intercept_, color = 'y', label = '2 Jeans')
+
+xS = df['SRealDistance']
+yS = df['SRSSI']
+ax4.plot(xS, S.coef_*np.log(xS) + S.intercept_, color = 'm', label = 'Shelf')
+
+xH = df['HRealDistance']
+yH = df['HRSSI']
+ax4.plot(xH, H.coef_*np.log(xH) + H.intercept_, color = 'c', label = 'Human')
 
 scatter4 = FigureCanvasTkAgg(figure4, root)
 scatter4.get_tk_widget().pack(side=tk.RIGHT, fill=tk.BOTH)
-ax4.legend(['RSSI'])
-ax4.set_xlabel('Distance')
-ax4.set_title('Distance Vs. RSSI')
-
+ax4.legend()
+ax4.set_xlabel('Distance (inches)')
+ax4.set_ylabel('RSSI (decibel milliwatts)')
+ax4.set_title('RSSI vs. Distance for Obstructions')
+"""
 """
 #plot 2nd scatter
 figure4 = plt.Figure(figsize=(5,4), dpi=100)
@@ -265,7 +420,7 @@ ax5.set_xlabel('Humidity')
 ax5.set_title('Humidity Vs. RSSI')
 """
 
-root.mainloop()
+#root.mainloop()
 
 
 #Machine Learning

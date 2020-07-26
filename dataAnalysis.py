@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 import numpy as np
 
@@ -98,6 +99,7 @@ def getAllDistances(folderName):
     distances = []
     for file in getAllFolderFiles(folderName):
         distances.append(getDistance(file))
+    #Only take away for log one
     if distances[0] == 0.0:
         distances.remove(0.0)
     return distances
@@ -269,6 +271,59 @@ def checkALL(actual, prediction):
     print(trueN, "True Negatives")
     print(falseN, "False Negatives")
 
+def writeCSV():
+    headers = ['Distance', 'No_Obstructions', 'Short_A', 'Short_S']
+    headers += ['2_Shorts', 'Jean_A', 'Jean_S', '2_Jeans', 'Shelf_M', 'Human_A']
+    with open('newD.csv', 'w') as csvfile:
+        fieldnames = headers
+        writer = csv.DictWriter(csvfile, fieldnames = fieldnames)
+        writer.writeheader()
 
-#print(getAllDistances("Short_A"))
-print(getAllRSSI("Short_A"))
+        for index in range(44):
+            writer.writerow(csvRow(index))
+
+
+def csvRow(index):
+    content = {}
+    content['Distance'] = str(getAllDistances('No_Obstructions')[index])
+    content['No_Obstructions'] = str(getAllRSSI('No_Obstructions')[index])
+    content['Short_A'] = str(getAllRSSI('Short_A')[index])
+    content['Short_S'] = str(getAllRSSI('Short_S')[index])
+    content['2_Shorts'] = str(getAllRSSI('2_Shorts')[index])
+    content['Jean_A'] = str(getAllRSSI('Jean_A')[index])
+    content['Jean_S'] = str(getAllRSSI('Jean_S')[index])
+    content['2_Jeans'] = str(getAllRSSI('2_Jeans')[index])
+    if index < 39:
+        content['Shelf_M'] = str(getAllRSSI('Shelf_M')[index])
+    if index < 42:
+        content['Human_A'] = str(getAllRSSI('Human_A')[index])
+    return content
+
+
+"""
+    fieldNames = ['distance', 'hi']
+    theWriter = csv.DictWrtier(f, fieldNames = filedNames)
+
+    theWriter.writeheader()
+    for i in range(1, 3):
+        theWriter.writerow({'distance' : 'one', 'hi' : 'two'})
+"""
+"""
+print("No Obstructions:", getAllRSSI("No_Obstructions"))
+print("\n")
+print("2 Jeans:", getAllRSSI("2_Jeans"))
+print("\n")
+print("2 Shorts:", getAllRSSI("2_Shorts"))
+print("\n")
+print("Human A:", getAllRSSI("human_A"))
+print("\n")
+print("Jean A:", getAllRSSI("Jean_A"))
+print("\n")
+print("Jean S:", getAllRSSI("Jean_S"))
+print("\n")
+print("Shelf M:", getAllRSSI("Shelf_M"))
+print("\n")
+print("Short A:", getAllRSSI("Short_A"))
+print("\n")
+print("Short S:", getAllRSSI("Short_S"))
+"""
