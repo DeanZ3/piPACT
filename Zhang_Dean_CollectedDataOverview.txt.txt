@@ -1,0 +1,3 @@
+Each folder name can be matched to one of my experiments presented in the report. In each folder are files. 
+The files has "obstruction type"_"Distance"_"Temperature"_"Humidity"_"Date""T""Time".
+The 62.0_oops folder is excess data I collected at distance 62.0, originally thinking that was 72.0 inches. (this can be ignored)
